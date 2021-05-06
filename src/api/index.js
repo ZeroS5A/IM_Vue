@@ -71,4 +71,13 @@ export default {
   UploadImage(data){
     return instance.post("/upload/image",data)
   },
+
+  // 管理端接口
+  GetUserList(){
+    return instance.post("/admin/getUserList")
+  },
+  
+  GetBlogList(){
+    return instance.post("/admin/getBlogList")
+  }
 }

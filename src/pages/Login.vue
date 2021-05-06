@@ -108,7 +108,7 @@
 
                                 this.$Message.success('登录成功');
                                 if (result.data.data.role == 'admin'){
-                                    this.$router.push("/admin/userInformation");
+                                    this.$router.push("/admin/systemInfo");
                                 }else{
                                     this.$router.push("/");
                                 }

@@ -68,8 +68,8 @@
                             <Icon type="ios-arrow-down"></Icon>
                         </a>
                         <DropdownMenu slot="list">
-                            <!-- <DropdownItem><a style="color:#657180" @click="toPage('/admin/sended')">博客管理</a></DropdownItem>
-                            <DropdownItem><a style="color:#657180" @click="toPage('/admin/newBlog')">新建博客</a></DropdownItem> -->
+                            <!-- <DropdownItem><a style="color:#657180" @click="toPage('/admin/sended')">博客管理</a></DropdownItem> -->
+                            <DropdownItem v-if="UserData.role == 'admin'"><a style="color:#657180" @click="toPage('/admin/systemInfo')">后台</a></DropdownItem>
                             <DropdownItem divided><div @click="logout()">登出</div> </DropdownItem>
                         </DropdownMenu>
                     </Dropdown>

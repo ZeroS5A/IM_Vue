@@ -59,9 +59,9 @@
             <Sider :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
                 <Menu :active-name="pageName" :style="{marginTop: '20px'}" theme="dark" width="auto" @on-select="selectName">
                     <MenuItem name="/">即时通讯</MenuItem>
-                    <MenuItem name="/">系统监控</MenuItem>
-                    <MenuItem name="/">用户管理</MenuItem>
-                    <MenuItem name="/">广场管理</MenuItem>
+                    <MenuItem name="/admin/systemInfo">系统监控</MenuItem>
+                    <MenuItem name="/admin/userAdmin">用户管理</MenuItem>
+                    <MenuItem name="/admin/blogAdmin">广场管理</MenuItem>
 
                     <!-- <Submenu name="1">
                         <template slot="title">

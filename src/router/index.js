@@ -42,44 +42,23 @@ export default new Router({
       //子路由
       children:[
         {
-          path:'/admin/userInformation',
-          name:"userInformation",
-          component: r => require.ensure([], () => r(require('@/components/background/userinformation.vue')), 'demo'),
+          path:'/admin/systemInfo',
+          name:"systemInfo",
+          component: r => require.ensure([], () => r(require('@/components/background/systemInfo.vue')), 'demo'),
           meta:{
             requireLogin:true
           }
         },{
-          path:'/admin/newBlog',
-          name:"newBlog",
-          component: r => require.ensure([], () => r(require('@/components/background/newBlog.vue'),), 'demo'),
+          path:'/admin/userAdmin',
+          name:"userAdmin",
+          component: r => require.ensure([], () => r(require('@/components/background/userAdmin.vue')), 'demo'),
           meta:{
             requireLogin:true
           }
         },{
-          path:'/admin/editBlog/:id',
-          name:"editBlog",
-          component: r => require.ensure([], () => r(require('@/components/background/newBlog.vue')), 'demo'),
-          meta:{
-            requireLogin:true
-          }
-        },{
-          path:'/admin/recover',
-          name:"recover",
-          component: r => require.ensure([], () => r(require('@/components/background/recover.vue')), 'demo'),
-          meta:{
-            requireLogin:true
-          }
-        },{
-          path:'/admin/sended',
-          name:"sended",
-          component: r => require.ensure([], () => r(require('@/components/background/sended.vue')), 'demo'),
-          meta:{
-            requireLogin:true
-          }
-        },{
-          path:'/admin/userSecurty',
-          name:"userSecurty",
-          component: r => require.ensure([], () => r(require('@/components/background/userSecurty.vue')), 'demo'),
+          path:'/admin/blogAdmin',
+          name:"blogAdmin",
+          component: r => require.ensure([], () => r(require('@/components/background/blogAdmin.vue')), 'demo'),
           meta:{
             requireLogin:true
           }
