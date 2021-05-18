@@ -138,8 +138,8 @@
     @media screen and (max-width: 768px) {
       .chatCard{
         margin: 0 auto;
-        margin-top: 80px;
-        width: 100%;
+        margin-top: 50px;
+        width: auto;
         height: 88vh;
       }
       .display{display: inline}
@@ -185,8 +185,8 @@
                                   <Row type="flex" justify="start" align="middle">
                                   <Col span="22">
                                       <ListItemMeta
-                                          :avatar="dialog.userProfile.avatar?dialog.userProfile.avatar:'http://im.lczeros.cn/ZimData/images/avatar/861ad3bfa725978e68a8e5707d0a9079.png'"
-                                          :title="dialog.userProfile.userID"
+                                          :avatar="getDialogAvatar(dialog)"
+                                          :title="getDialogName(dialog)"
                                           :description="dialog.lastMessage.messageForShow"
                                       />
                                   </Col>
@@ -234,7 +234,7 @@
                               <!-- 聊天内容 -->
                               <div v-for="item in messageList">
                                   <div v-if="item.from != UserData.userName" class="messageItem-L">
-                                      <Avatar style="margin-right:5px" class="avatar" :src="item.avatar" />
+                                      <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
                                       <div class="messageItemBox-L"></div>
                                       <div class="messageItemText-L">
                                           <p style="word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
@@ -447,7 +447,36 @@
                     this.$refs.messageBox.scrollTop = this.$refs.messageBox.scrollHeight+100;                     
                 }, 10);
 
-            }
+            },
+            getDialogName: function (dialog) {
+				if (dialog.type ==='C2C'){
+					// return dialog.userProfile.nick?dialog.userProfile.nick:dialog.userProfile.userID
+					return dialog.userProfile.userID
+				}
+				else if (dialog.type === 'GROUP') {
+					return `群组-${dialog.groupProfile.name?dialog.groupProfile.name:dialog.groupProfile.groupID}`
+				}
+				else if (dialog.type === "@TIM#SYSTEM") {
+					return "系统通知"
+				}
+				else {
+					return "未知"
+				}
+			},
+			getDialogAvatar: function (dialog) {
+				if (dialog.type ==='C2C'){
+					return dialog.userProfile.avatar?dialog.userProfile.avatar:'/static/user.png'
+				}
+				else if (dialog.type === 'GROUP') {
+					return dialog.groupProfile.avatar?dialog.groupProfile.avatar:'/static/group.png'
+				}
+				else if (dialog.type === "@TIM#SYSTEM") {
+					return "/static/systemMsg.png"
+				}
+				else {
+					return "未知"
+				}
+			},
         }
     }
 </script>

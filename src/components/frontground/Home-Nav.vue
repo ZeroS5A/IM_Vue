@@ -30,7 +30,7 @@
         }
         .header{
             padding: 0 15px;
-            line-height: 40px;
+            line-height: 50px;
         }
         .avatar{
             display:none;
@@ -76,55 +76,6 @@
                 </div>                
             </div>
         </Col>
-        <Col :xs="{span: 8, order: 5}" :md="{span: 0}" :lg="{span: 0}">
-            <Dropdown style="float:right">
-                <a href="javascript:void(0)">
-                    分类
-                    <Icon type="ios-keypad"></Icon>
-                </a>
-
-                <!-- 子分类 -->
-                <DropdownMenu slot="list">
-                    <!-- 公告栏 -->
-                    <Dropdown placement="right-start">
-                        <DropdownItem>
-                            <Icon type="ios-arrow-back"></Icon>
-                            公告栏
-                        </DropdownItem>
-                        <DropdownMenu slot="list">
-                            <DropdownItem><a @click="toBlog(1)">关于注册</a></DropdownItem>
-                            <DropdownItem><a @click="toBlog(2)">关于网站</a></DropdownItem>
-                            <DropdownItem><a @click="toBlog(3)">联系作者</a></DropdownItem>
-                            <DropdownItem><a @click="toBlog(4)">更新公告</a></DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <!-- 三大件 -->
-                    <Dropdown divided placement="right-start">
-                        <DropdownItem>
-                            <Icon type="ios-arrow-back"></Icon>
-                            今日推荐
-                        </DropdownItem>
-                        <DropdownMenu slot="list">
-                            <DropdownItem><a @click="changeLabel('A')">推荐阅读</a></DropdownItem>
-                            <DropdownItem><a @click="changeLabel('B')">近期热门</a></DropdownItem>
-                            <DropdownItem><a @click="changeLabel('C')">最新博文</a></DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <!-- 列表标签 -->
-                    <Dropdown placement="left-start" v-for="items in classList" :key="items.classId">
-                        <DropdownItem >
-                            <a @click.prevent="changeClass(items)">
-                                <Icon type="ios-arrow-back"></Icon>
-                                {{items.name}}
-                            </a>
-                        </DropdownItem>
-                        <DropdownMenu slot="list">
-                            <DropdownItem v-for="item in items.tTagsList" :key="item.classId" ><a @click="changeLabel(item)">{{item.tagName}}</a></DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                </DropdownMenu>
-            </Dropdown>
-        </Col>
     </Row>
 </Header>
 </template>
@@ -136,6 +87,38 @@
                 searchData:''
             }
         },
+        computed: {
+            isLogin(){
+				return this.$store.state.isLogin;
+			},
+            ConversationList(){
+                return this.$store.state.userConversationList
+            },
+            getNewMessage() {
+				return this.$store.state.newMessage
+			}
+        },
+        watch: {
+			isLogin(){
+                if(!this.isLogin){
+                    this.$Modal.warning({
+                        title: '你已经退出登录',
+                        onOk: () => {
+                        localStorage.clear()
+                        this.UserData = null
+                        this.$router.push({ path: '/login' }).catch(data => {  })
+
+                        let promise = this.Tim.logout();
+                        promise.then((imResponse) => {
+                            console.log(imResponse.data); // 登出成功
+                        }).catch(function(imError) {
+                            console.warn('logout error:', imError);
+                        });
+                    }
+                    });
+                }
+            }
+		},
         props:{
             'classList':Array,
             'changeLabel':Function,

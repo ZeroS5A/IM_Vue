@@ -49,6 +49,13 @@ export default new Router({
             requireLogin:true
           }
         },{
+          path:'/admin/druidInfo',
+          name:"druidInfo",
+          component: r => require.ensure([], () => r(require('@/components/background/druidInfo.vue')), 'demo'),
+          meta:{
+            requireLogin:true
+          }
+        },{
           path:'/admin/userAdmin',
           name:"userAdmin",
           component: r => require.ensure([], () => r(require('@/components/background/userAdmin.vue')), 'demo'),

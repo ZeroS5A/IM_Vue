@@ -40,9 +40,6 @@ const store = new Vuex.Store({
     },
 		mutations:{
 			//es6语法，等同edit:funcion(){...}
-			edit(state){
-				state.name = 'jack'
-			},
 			changeLoginState(state, isLogin){
 				state.isLogin = isLogin
 			},

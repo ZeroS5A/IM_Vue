@@ -59,19 +59,20 @@
             <Sider :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
                 <Menu :active-name="pageName" :style="{marginTop: '20px'}" theme="dark" width="auto" @on-select="selectName">
                     <MenuItem name="/">即时通讯</MenuItem>
-                    <MenuItem name="/admin/systemInfo">系统监控</MenuItem>
+                    <!-- <MenuItem name="/admin/systemInfo">系统监控</MenuItem> -->
+
+                    <Submenu name="1">
+                        <template slot="title">
+                            <!-- <Icon type="ios-contact" size="15"></Icon> -->
+                            系统监控
+                        </template>
+                        <MenuItem name="/admin/systemInfo">服务器信息</MenuItem>
+                        <MenuItem name="/admin/druidInfo">连接池信息</MenuItem>
+                    </Submenu>
+
                     <MenuItem name="/admin/userAdmin">用户管理</MenuItem>
                     <MenuItem name="/admin/blogAdmin">广场管理</MenuItem>
-
-                    <!-- <Submenu name="1">
-                        <template slot="title">
-                            <Icon type="ios-contact" size="15"></Icon>
-                            用户管理
-                        </template>
-                        <MenuItem name="/admin/userInformation">基本信息</MenuItem>
-                        <MenuItem name="/admin/userSecurty">密码及安全</MenuItem>
-                    </Submenu>
-                    <Submenu name="2">
+                    <!-- <Submenu name="2">
                         <template slot="title">
                             <Icon type="ios-keypad"></Icon>
                             广场管理

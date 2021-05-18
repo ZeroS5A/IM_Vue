@@ -58,6 +58,9 @@ export default {
   GetMailCode(data){
     return instance.post("/blog/getMailCode",data)
   },
+  GetCommentList(blogId){
+		return instance.get(`/blog/getCommentList?blogId=${blogId}`)
+	},
 
   //需要权限
   GetUserData(){
@@ -76,8 +79,13 @@ export default {
   GetUserList(){
     return instance.post("/admin/getUserList")
   },
-  
   GetBlogList(){
-    return instance.post("/admin/getBlogList")
+    return instance.post("/blog/getBlogList?userName=")
+  },
+  BanUser(userName){
+    return instance.get(`/admin/banUser?userName=${userName}`)
+  },
+  UnBanUser(userName){
+    return instance.get(`/admin/unBanUser?userName=${userName}`)
   }
 }
