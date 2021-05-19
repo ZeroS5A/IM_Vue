@@ -181,7 +181,7 @@
                       <!-- 信息对象 -->
                       <div style="top: 8%;height:92%; width:100%; position:absolute;">
                           <Scroll class="leftScotll">
-                              <div v-for="dialog in ConversationList" :class="chartTitle==dialog.toAccount?'userItemSel':'userItem'" @click="chooseUser(dialog)" :key="dialog.conversationID">
+                              <div v-for="dialog in ConversationList" :class="chartTitle==getDialogName(dialog)?'userItemSel':'userItem'" @click="chooseUser(dialog)" :key="dialog.conversationID">
                                   <Row type="flex" justify="start" align="middle">
                                   <Col span="22">
                                       <ListItemMeta
@@ -233,31 +233,60 @@
                           <div ref=messageBox style="overflow:auto; height:61vh !important;padding-bottom: 15px;">
                               <!-- 聊天内容 -->
                               <div v-for="item in messageList">
-                                  <div v-if="item.from != UserData.userName" class="messageItem-L">
-                                      <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
-                                      <div class="messageItemBox-L"></div>
-                                      <div class="messageItemText-L">
-                                          <p style="word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
-                                      </div>
-                                  </div>
-                                  <div v-else class="messageItem-R">
-                                      <div class="messageItemText-R">
-                                          <p style="color:#fff;word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
-                                      </div>
-                                      <div class="messageItemBox-R"></div>
-                                      <Avatar style="margin-left:5px"  class="avatar" :src="UserData.avatarUrl" />
-                                  </div>
+                                <div v-if="item.from != UserData.userName">
+                                    <div v-if="chartTitle == '系统通知'" class="messageItem-L">
+                                        <Avatar style="margin-right:5px" class="avatar" src="/static/systemMsg.png" />
+                                        <div class="messageItemBox-L"></div>
+                                        <div class="messageItemText-L">
+                                            <p style="word-break:break-all;white-space: pre-line;">收到一条系统信息，请到移动端查看</p>
+                                        </div>
+                                    </div>
+                                    <div v-if="item.payload.description == 'img'" class="messageItem-L">
+                                        <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
+                                        <div class="messageItemBox-L"></div>
+                                        <div class="messageItemText-L">
+                                            <img :src="item.payload.data" style="margin-top: 10rpx;max-width:200px;">
+                                        </div>
+                                    </div>
+                                    <div v-if="item.payload.text" class="messageItem-L">
+                                        <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
+                                        <div class="messageItemBox-L"></div>
+                                        <div class="messageItemText-L">
+                                            <p style="word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else>
+                                    <div v-if="item.payload.description == 'img'" class="messageItem-R">
+                                        <div class="messageItemBox-L"></div>
+                                        <div class="messageItemText-L">
+                                            <img :src="item.payload.data" style="margin-top: 10rpx;max-width:200px;">
+                                        </div>
+                                        <Avatar style="margin-left:5px"  class="avatar" :src="UserData.avatarUrl" />  
+                                    </div>
+                                    <div v-if="item.payload.text" class="messageItem-R">
+                                        <div class="messageItemText-R">
+                                            <p style="color:#fff;word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
+                                        </div>
+                                        <div class="messageItemBox-R"></div>
+                                        <Avatar style="margin-left:5px"  class="avatar" :src="UserData.avatarUrl" />                                        
+                                    </div>
+
+                                </div>
                               </div>
                           </div>
                       </div>
-                      <!-- 输入框 -->
-                      <div style="bottom:0; height:20%; width:100%; position:absolute;background-color: white;">
-                          <Input ref=sendInput @on-keyup="checkInput" v-model="sendTextMessage" :maxlength="250" class="chatTextBox" type="textarea" :rows="3" placeholder="开始聊天...." />
+                      <div v-if="isShowTextBox">
+                        <!-- 输入框 -->
+                        <div style="bottom:0; height:20%; width:100%; position:absolute;background-color: white;">
+                            <Input ref=sendInput @on-keyup="checkInput" v-model="sendTextMessage" :maxlength="250" class="chatTextBox" type="textarea" :rows="3" placeholder="开始聊天...." />
+                        </div>
+                        <!-- 发送按钮 -->
+                        <div style="bottom:25px; right:25px; height:2%; position:absolute; background-color: white;">
+                            <Button @click="sendMessage()" size="small" type="primary">发送</Button>
+                        </div>                          
                       </div>
-                      <!-- 发送按钮 -->
-                      <div style="bottom:25px; right:25px; height:2%; position:absolute; background-color: white;">
-                          <Button @click="sendMessage()" size="small" type="primary">发送</Button>
-                      </div>
+
                   </div>
               </Col>
           </Row>
@@ -299,8 +328,9 @@
                 chartTitle:'未选择',
                 dialogData: {},
                 messageList: [],
-                sendTextMessage:''
+                sendTextMessage:'',
                 
+                isShowTextBox:false
             }
         },
         mounted() {
@@ -389,10 +419,14 @@
             },
             // 选择用户
             chooseUser(dialog){
-                this.chartTitle = dialog.toAccount
+                this.chartTitle = this.getDialogName(dialog)
                 this.getMsgList(dialog)
-
                 this.handelRead(dialog.conversationID)
+                if(dialog.type == 'C2C' || dialog.type == 'GROUP'){
+                    this.isShowTextBox = true
+                }else{
+                    this.isShowTextBox = false
+                }
             },
             // 已读信息上报
             handelRead(conversationID){
@@ -448,13 +482,13 @@
                 }, 10);
 
             },
-            getDialogName: function (dialog) {
+            getDialogName(dialog) {
 				if (dialog.type ==='C2C'){
 					// return dialog.userProfile.nick?dialog.userProfile.nick:dialog.userProfile.userID
 					return dialog.userProfile.userID
 				}
 				else if (dialog.type === 'GROUP') {
-					return `群组-${dialog.groupProfile.name?dialog.groupProfile.name:dialog.groupProfile.groupID}`
+					return `${dialog.groupProfile.name?dialog.groupProfile.name:dialog.groupProfile.groupID}`
 				}
 				else if (dialog.type === "@TIM#SYSTEM") {
 					return "系统通知"
@@ -463,7 +497,7 @@
 					return "未知"
 				}
 			},
-			getDialogAvatar: function (dialog) {
+			getDialogAvatar(dialog) {
 				if (dialog.type ==='C2C'){
 					return dialog.userProfile.avatar?dialog.userProfile.avatar:'/static/user.png'
 				}

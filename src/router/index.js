@@ -6,16 +6,6 @@ Vue.use(Router)
 export default new Router({
   mode: "history",
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'Home',
-    //   component: r => require.ensure([], () => r(require('@/pages/Home.vue')), 'demo')
-    // },
-    {
-      path:'/blog/:id',
-      name:"blog",
-      component: r => require.ensure([], () => r(require('@/pages/Blog.vue')), 'demo')
-    },
     {
       path:'/login',
       name:"login",
@@ -46,33 +36,38 @@ export default new Router({
           name:"systemInfo",
           component: r => require.ensure([], () => r(require('@/components/background/systemInfo.vue')), 'demo'),
           meta:{
-            requireLogin:true
+            requireLogin:true,
+            requireAdmin:true
           }
         },{
           path:'/admin/druidInfo',
           name:"druidInfo",
           component: r => require.ensure([], () => r(require('@/components/background/druidInfo.vue')), 'demo'),
           meta:{
-            requireLogin:true
+            requireLogin:true,
+            requireAdmin:true
           }
         },{
           path:'/admin/userAdmin',
           name:"userAdmin",
           component: r => require.ensure([], () => r(require('@/components/background/userAdmin.vue')), 'demo'),
           meta:{
-            requireLogin:true
+            requireLogin:true,
+            requireAdmin:true
           }
         },{
           path:'/admin/blogAdmin',
           name:"blogAdmin",
           component: r => require.ensure([], () => r(require('@/components/background/blogAdmin.vue')), 'demo'),
           meta:{
-            requireLogin:true
+            requireLogin:true,
+            requireAdmin:true
           }
         }
       ],
       meta:{
-        requireLogin:true //需要登录
+        requireLogin:true, //需要登录
+        requireAdmin:true
       }
     },
     //空白跳转

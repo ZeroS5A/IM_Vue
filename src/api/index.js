@@ -70,22 +70,39 @@ export default {
     return instance.post("/user/getUserRelationShip")
   },
 
+
   //上传接口
   UploadImage(data){
     return instance.post("/upload/image",data)
   },
 
   // 管理端接口
-  GetUserList(){
-    return instance.post("/admin/getUserList")
+  GetUserList(userName){
+    return instance.get(`/admin/getUserList?userName=${userName}`)
   },
   GetBlogList(){
     return instance.post("/blog/getBlogList?userName=")
   },
+  GetBlogListById(userName){
+		return instance.get(`/blog/getBlogListById?userName=${userName}`)
+	},
   BanUser(userName){
     return instance.get(`/admin/banUser?userName=${userName}`)
   },
   UnBanUser(userName){
     return instance.get(`/admin/unBanUser?userName=${userName}`)
-  }
+  },
+  DeleteComment(commentId){
+		return instance.delete(`/admin/deleteComment?commentId=${commentId}`)
+	},
+	DeleteBlog(blogId){
+		return instance.delete(`/admin/deleteBlog?blogId=${blogId}`)
+	},
+  ReSetPW(userName){
+    return instance.get(`/admin/resetUserPw?userName=${userName}`)
+  },
+  GetUserNameList(userName){
+    return instance.get(`/admin/getUserNameList?userName=${userName}`)
+  },
+  
 }

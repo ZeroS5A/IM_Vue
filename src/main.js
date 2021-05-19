@@ -32,11 +32,15 @@ new Vue({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   window.document.title = 'ZIM'
-  // 获取token
   let token = localStorage.getItem('token')
+  let UserData = JSON.parse(localStorage.getItem("UserData"))
   // token 存在且不为空则已登录 不存在或为空则未登录
   if (token !== null && token !== '') {
-    next()
+    if (UserData.role !== 'admin' && to.meta.requireAdmin){
+      ViewUI.Message.info('无权访问')
+    }else{
+      next()
+    }
   } else {
     // 用户进入需要登录的页面，则跳转登录界面
     if (to.meta.requireLogin) {

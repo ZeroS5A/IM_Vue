@@ -9340,10 +9340,10 @@ thunky@^1.0.2:
   resolved "https://registry.npm.taobao.org/thunky/download/thunky-1.1.0.tgz#5abaf714a9405db0504732bbccd2cedd9ef9537d"
   integrity sha1-Wrr3FKlAXbBQRzK7zNLO3Z75U30=
 
-tim-js-sdk@^2.10.2:
-  version "2.10.2"
-  resolved "https://registry.nlark.com/tim-js-sdk/download/tim-js-sdk-2.10.2.tgz?cache=0&sync_timestamp=1619509402319&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftim-js-sdk%2Fdownload%2Ftim-js-sdk-2.10.2.tgz#972c325a649e749ceffbaede989905ef78725e10"
-  integrity sha1-lywyWmSedJzv+67emJkF73hyXhA=
+tim-js-sdk@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.nlark.com/tim-js-sdk/download/tim-js-sdk-2.11.0.tgz#dcc1a3728251e4bb593fd4cd17c45c1d728041e1"
+  integrity sha1-3MGjcoJR5LtZP9TNF8RcHXKAQeE=
 
 tim-upload-plugin@^1.0.1:
   version "1.0.1"

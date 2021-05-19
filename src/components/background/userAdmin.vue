@@ -8,6 +8,15 @@
                 <BreadcrumbItem>用户管理</BreadcrumbItem>
             </Breadcrumb>
             <Card>
+                <AutoComplete
+                v-model="value1"
+                :data="data1"
+                @on-search="handleSearch1"
+                @on-select="getUserListByUserName"
+                @on-clear="getUserListByUserName('')"
+                placeholder="筛选发帖用户"
+                :clearable="true"
+                style="width:150px;margin-bottom:10px"></AutoComplete>
                 <Table border :loading="loading" :columns="tableTitle" :data="userList">
                     <template slot-scope="{ row }" slot="userName">
                         <strong>{{ row.userName }}</strong>
@@ -31,6 +40,9 @@
         data(){
             return{
                 loading:true,
+
+                value1: '',
+                data1: [],
 
                 tableTitle:[
                     {
@@ -75,14 +87,14 @@
             }
         },
         mounted(){
-            this.getUserList()
+            this.getUserList('')
         },
         computed: {
 
         },
         methods:{
-            getUserList(){
-                this.Request.GetUserList()
+            getUserList(userName){
+                this.Request.GetUserList(userName)
                 .then(res=>{
                     if(res.data.code === 200){
                         this.userList = res.data.data.userList
@@ -96,12 +108,28 @@
                     }
                 })
             },
+            getUserListByUserName(userName){
+                this.getUserList(userName)
+            },
+            handleSearch1 (value) {
+                this.Request.GetUserNameList(value)
+                .then(res=>{
+                    if(res.data.code == 200){
+                        this.data1 = res.data.data
+                    }
+                })
+            },
             resetUser(userName){
                 this.$Modal.confirm({
                     title: '确定重置该用户的密码吗？',
                     content:'该用户的密码将被重置为’123456‘',
                     onOk: () => {
-                                                
+                        this.Request.ReSetPW(userName)
+                        .then(res=>{
+                            if(res.data.code == 200){
+                                this.$Message.info('操作成功');
+                            }
+                        })
                     },
                 });
             },
@@ -114,7 +142,7 @@
                             this.loading = true
                             this.Request.UnBanUser(item.userName)
                             .then(res=>{
-                                if(res.data.data = 200){
+                                if(res.data.code == 200){
                                     this.$Message.info('操作成功');
                                     this.getUserList()
                                     this.loading = false
@@ -132,7 +160,7 @@
                             this.loading = true
                             this.Request.BanUser(item.userName)
                             .then(res=>{
-                                if(res.data.data = 200){
+                                if(res.data.data == 200){
                                     this.$Message.info('操作成功');
                                     this.getUserList()
                                     this.loading = false
