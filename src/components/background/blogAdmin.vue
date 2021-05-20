@@ -141,7 +141,6 @@
                 })
             },
             getBlogListById(value){
-                console.log("???")
                 this.Request.GetBlogListById(value)
                 .then(res=>{
                     if(res.data.code === 200){

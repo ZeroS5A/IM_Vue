@@ -21,6 +21,7 @@
         border: none !important;
         resize: none;
         padding: 15px;
+        padding-top: 1px;
     }
     .chatTextBox textarea:enabled {
         border: none!important;
@@ -241,37 +242,32 @@
                                             <p style="word-break:break-all;white-space: pre-line;">收到一条系统信息，请到移动端查看</p>
                                         </div>
                                     </div>
-                                    <div v-if="item.payload.description == 'img'" class="messageItem-L">
+                                    <div class="messageItem-L">
                                         <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
                                         <div class="messageItemBox-L"></div>
                                         <div class="messageItemText-L">
-                                            <img :src="item.payload.data" style="margin-top: 10rpx;max-width:200px;">
-                                        </div>
-                                    </div>
-                                    <div v-if="item.payload.text" class="messageItem-L">
-                                        <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
-                                        <div class="messageItemBox-L"></div>
-                                        <div class="messageItemText-L">
-                                            <p style="word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
+                                            <img v-if="item.payload.description == 'img'" :src="item.payload.data" style="margin-top: 10rpx;max-width:200px;">
+                                            <p v-if="item.payload.text" style="word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
+                                            <div v-if="item.payload.description == 'file'" >
+                                                <Icon type="ios-folder" size="35" style="margin:10px 20px 10px 0"/>
+                                                <a :href="item.payload.data" :download="item.payload.extension">{{item.payload.extension}}</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div v-else>
-                                    <div v-if="item.payload.description == 'img'" class="messageItem-R">
-                                        <div class="messageItemBox-L"></div>
-                                        <div class="messageItemText-L">
-                                            <img :src="item.payload.data" style="margin-top: 10rpx;max-width:200px;">
+                                    <div class="messageItem-R">
+                                        <div :class="`messageItemText-${item.payload.text?'R':'L'}`">
+                                            <p v-if="item.payload.text" style="color:#fff;word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
+                                            <img v-if="item.payload.description == 'img'" :src="item.payload.data" style="padding: -10px;max-width:200px;">
+                                            <div v-if="item.payload.description == 'file'">
+                                                <Icon type="ios-folder" size="35" style="margin:10px 20px 10px 0" />
+                                                <a :href="item.payload.data" :download="item.payload.extension">{{item.payload.extension}}</a>
+                                            </div>
                                         </div>
-                                        <Avatar style="margin-left:5px"  class="avatar" :src="UserData.avatarUrl" />  
-                                    </div>
-                                    <div v-if="item.payload.text" class="messageItem-R">
-                                        <div class="messageItemText-R">
-                                            <p style="color:#fff;word-break:break-all;white-space: pre-line;">{{item.payload.text}}</p>
-                                        </div>
-                                        <div class="messageItemBox-R"></div>
+                                        <div :class="item.payload.text?'messageItemBox-R':''"></div>
                                         <Avatar style="margin-left:5px"  class="avatar" :src="UserData.avatarUrl" />                                        
                                     </div>
-
                                 </div>
                               </div>
                           </div>
@@ -279,6 +275,25 @@
                       <div v-if="isShowTextBox">
                         <!-- 输入框 -->
                         <div style="bottom:0; height:20%; width:100%; position:absolute;background-color: white;">
+                            <Row style="padding:5px 10px 5px 15px">
+                                <Col span="1">
+                                    <Upload
+                                        :before-upload="handleUploadFile"
+                                        action="" >
+                                        <Icon size="20" type="ios-folder-outline" /> 
+                                    </Upload>
+                                </Col>
+                                <Col span="1">
+                                    <Upload
+                                        :before-upload="handleUploadImg"
+                                        action=""
+                                        accept="image/jpeg, image/png"
+                                        :max-size="5048"
+                                        :format="['jpg','jpeg','png']">
+                                        <Icon size="20" type="ios-image-outline" /> 
+                                    </Upload>                                
+                                </Col>
+                            </Row>
                             <Input ref=sendInput @on-keyup="checkInput" v-model="sendTextMessage" :maxlength="250" class="chatTextBox" type="textarea" :rows="3" placeholder="开始聊天...." />
                         </div>
                         <!-- 发送按钮 -->
@@ -300,6 +315,7 @@
     // 引入组件
     import HomeNav from "@/components/frontground/Home-Nav";
     import HomeFooter from "@/components/frontground/Home-Footer";
+    import TIM from 'tim-js-sdk';
 
     export default {
         name: 'websocket',
@@ -436,9 +452,54 @@
 				  console.warn('setMessageRead error:', imError);
 				});
             },
+            handleUploadFile(file){
+                this.handleUpload(file,'file')
+            },
+            handleUploadImg(img){
+                this.handleUpload(img,'img')
+            },
+            handleUpload(img,type){
+                console.log(img)
+                var formdata = new FormData();
+                formdata.append('userID', '')
+                formdata.append('image', img);
+                formdata.append('type', type=='img'?'charImg':'charFile');
+                
+                this.Request.UploadImage(formdata)
+                .then(result=>{
+                    if(result.data.code==200){
+                        //获取md对象返回上传的url
+                        console.log("图片链接",result.data)
+                       
+                        // 1. 创建消息实例，接口返回的实例可以上屏
+                        let message = this.Tim.createCustomMessage({
+                            to: this.dialogData.to,
+                            conversationType: this.dialogData.type,
+                            payload: {
+                                description: type,
+                                data: result.data.data.imgUrl,
+                                extension: img.name
+                            },
+                        });
+                    
+                        // 2. 发送消息
+                        let promise = this.Tim.sendMessage(message);
+                        promise.then((imResponse) =>{
+                            // 发送成功
+                            this.messageList.push(imResponse.data.message)
+					        this.endScoll()
+                        }).catch(function(imError) {
+                            // 发送失败
+                            console.warn('sendMessage error:', imError);
+                        });
+                    }else{
+                        console.log("error")
+                    }
+                })
+            },
             // 获取对话内容
             getMsgList(dialog){
-				let promise = this.Tim.getMessageList({conversationID:dialog.conversationID, count: 15});
+				let promise = this.Tim.getMessageList({conversationID:dialog.conversationID, count: 25});
                 promise.then((imResponse) => {
                     const messageList = imResponse.data.messageList; // 消息列表。
                     const nextReqMessageID = imResponse.data.nextReqMessageID; // 用于续拉，分页续拉时需传入该字段。

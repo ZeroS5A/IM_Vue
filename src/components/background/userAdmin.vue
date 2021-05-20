@@ -14,7 +14,7 @@
                 @on-search="handleSearch1"
                 @on-select="getUserListByUserName"
                 @on-clear="getUserListByUserName('')"
-                placeholder="筛选发帖用户"
+                placeholder="筛选用户"
                 :clearable="true"
                 style="width:150px;margin-bottom:10px"></AutoComplete>
                 <Table border :loading="loading" :columns="tableTitle" :data="userList">

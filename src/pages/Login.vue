@@ -85,9 +85,9 @@
             login(name){
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        var postData={
+                        let postData={
                             userID:this.formData.userName,
-                            userPW:this.formData.passwd
+                            userPW:md5(this.formData.passwd)
                             // password:md5(this.formData.passwd)
                         }
                         this.Request.UserLogin(postData)

@@ -81,10 +81,10 @@ export default {
     return instance.get(`/admin/getUserList?userName=${userName}`)
   },
   GetBlogList(){
-    return instance.post("/blog/getBlogList?userName=")
+    return instance.post("/admin/getBlogList?userName=")
   },
   GetBlogListById(userName){
-		return instance.get(`/blog/getBlogListById?userName=${userName}`)
+		return instance.get(`/admin/getBlogListById?userName=${userName}`)
 	},
   BanUser(userName){
     return instance.get(`/admin/banUser?userName=${userName}`)
