@@ -242,7 +242,7 @@
                                             <p style="word-break:break-all;white-space: pre-line;">收到一条系统信息，请到移动端查看</p>
                                         </div>
                                     </div>
-                                    <div class="messageItem-L">
+                                    <div v-else class="messageItem-L">
                                         <Avatar style="margin-right:5px" class="avatar" :src="item.avatar?item.avatar:'/static/user.png'" />
                                         <div class="messageItemBox-L"></div>
                                         <div class="messageItemText-L">
@@ -275,6 +275,7 @@
                       <div v-if="isShowTextBox">
                         <!-- 输入框 -->
                         <div style="bottom:0; height:20%; width:100%; position:absolute;background-color: white;">
+                            <Spin size="large" v-if="true" >
                             <Row style="padding:5px 10px 5px 15px">
                                 <Col span="1">
                                     <Upload
@@ -295,6 +296,7 @@
                                 </Col>
                             </Row>
                             <Input ref=sendInput @on-keyup="checkInput" v-model="sendTextMessage" :maxlength="250" class="chatTextBox" type="textarea" :rows="3" placeholder="开始聊天...." />
+                            </Spin>
                         </div>
                         <!-- 发送按钮 -->
                         <div style="bottom:25px; right:25px; height:2%; position:absolute; background-color: white;">
@@ -459,7 +461,10 @@
                 this.handleUpload(img,'img')
             },
             handleUpload(img,type){
-                console.log(img)
+                this.$Modal.warning({
+                    title: '上传中',
+                    content: '如文件过大可能上传失败，请耐心等待'
+                });
                 var formdata = new FormData();
                 formdata.append('userID', '')
                 formdata.append('image', img);

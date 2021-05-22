@@ -94,7 +94,7 @@
         },
         methods:{
             getUserList(userName){
-                this.Request.GetUserList(userName)
+                this.Request.GetUserList(userName?userName:'')
                 .then(res=>{
                     if(res.data.code === 200){
                         this.userList = res.data.data.userList
@@ -144,7 +144,7 @@
                             .then(res=>{
                                 if(res.data.code == 200){
                                     this.$Message.info('操作成功');
-                                    this.getUserList()
+                                    this.getUserList('')
                                     this.loading = false
                                 }
                             })                        
@@ -160,9 +160,9 @@
                             this.loading = true
                             this.Request.BanUser(item.userName)
                             .then(res=>{
-                                if(res.data.data == 200){
+                                if(res.data.code == 200){
                                     this.$Message.info('操作成功');
-                                    this.getUserList()
+                                    this.getUserList('')
                                     this.loading = false
                                 }
                             })                        
